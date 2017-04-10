@@ -1,0 +1,50 @@
+﻿@model Dropdowns.Models.ModelLista
+ @using iTextSharp.tutorial.detectie_tabel;
+ @using iTextSharp.tutorial.Chapter1;
+@{
+    ViewBag.Title = "Tables ";
+
+}
+
+<div>
+
+
+    <p>Selection</p>
+    <dl>
+        <dt>You have choosed</dt>
+        <dd>@Model.State</dd>
+
+    </dl>
+    @if (Model.State != String.Empty) //oricare varianta din lista e buna, deci nu mai e nevoie de o verificare aditionala
+    {
+
+        <div>
+            <!--   Html.PartialView("~/Grid/grid.cshtml", model2); -->
+            @Html.Action("grid", "Grid", new { numefisier = Model.State })
+           
+        </div>
+        //objlist model2 = tabledetect.tabel_cu_linii(Path.Combine(Server.MapPath("~/PDFs/"), Model.State.ToString()));
+
+        //Html.RenderPartial("~/Grid/grid.cshtml", model2);
+
+        //PartialView("~/Grid/grid.cshtml", model2);
+        //Html.Partial("grid","Grid", new { numefisier , Model.State }) = acesta reutrneaza un string, nu e randat
+
+        //Html.View("~/Grid/grid.cshtml", model);
+
+        //Html.Action("grid","Grid", new { numefisier = Model.State }); //apelam metoda Grid cu parametrul numefisier
+
+        //Html.Action("grids", "Grid")
+
+        //mai este o varianta cu PartialView, REnderPArtial in care trimitem modelul la view-ul grid
+        //  Html.Action("Index", "Home");
+
+
+
+    }
+   
+ 
+    
+
+</div>
+

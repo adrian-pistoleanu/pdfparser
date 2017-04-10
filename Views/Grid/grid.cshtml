@@ -1,0 +1,132 @@
+﻿@using iTextSharp.tutorial.Chapter1;
+@using iTextSharp.tutorial.detectie_tabel;
+@model  objlist
+@using System.Web.Helpers;
+
+@{
+    ViewBag.Title = "Gridveiw using simple foreach";
+    Layout = "~/Views/Shared/_LayoutGrid.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<link href="https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+
+<div id="result">
+    <h1>Table gridview design</h1>
+    <br />
+    @{ 
+        var alltables = Model.toate;
+        var words = Model.cuvinte;
+        var poz = 0;
+    }
+@foreach (List<tabele>[][] matinit in alltables)
+{
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                @{ 
+                    List<tabele>[] header = matinit[0];
+                    } 
+                @for (int j = 0; j < header.Length; j++)
+                {
+                    foreach (tabele tb in header[j])
+                    {
+                            <th>@(words[tb.indice])</th>
+
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (matinit.Length > 1)
+            {
+                for (int i = 1; i < matinit.Length; i++)
+                {
+                    <tr>
+                        @{List<tabele>[] lin1 = matinit[i];
+                            for (int j = 0; j < lin1.Length; j++)
+                            {
+
+                                foreach (tabele tb in lin1[j])
+                                {
+                                    <td>@(words[tb.indice])</td>
+                                }
+                            }
+                     }
+                    </tr>
+                                }
+                            }
+            
+        </tbody>
+
+    </table>
+
+                            //trebuie transmis ca parametru in ajax id button pentru download 
+       /*   using (Ajax.BeginForm("download_excel", "Grid", new { nr = @poz, numefisier= ViewBag.den.st[@poz] }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "parser1" }))
+                            {
+        <button class="btn btn-default">Download as Excel File </button>
+        <input type="submit" id="button1" value="Parse2" class="btn btn-primary" /> <br />
+                            }*/
+              @Html.ActionLink("Download excel", "download_excel", "Grid", new { nr = @poz, numefisier = ViewBag.den.st[@poz] },null)
+
+
+
+                                poz = poz + 1;
+                           
+                            }
+
+    @using (Ajax.BeginForm("download_zip", "Grid", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "parser1" }))
+    {
+       // <button class="btn btn-default" >Download all excel files in Zip Archive </button>
+    }
+    
+    <div>MS Excel files generated:</div>
+    
+    
+    @foreach (string s in ViewBag.den.st as ICollection<string>)
+    {
+
+               <div>@s</div>
+    }
+    @Html.ActionLink("Download zip", "download_zip", "Grid")
+    <div id="parser1"></div>
+
+    <div class="clearfix"></div>
+    <!--
+        
+    
+    <div id="dialog" title="edit view" style="overflow: hidden;"></div>
+
+    @section Scripts{
+        <script src="https://code.jquery.com/ui/1.12.0-rc.2/jquery-ui.min.js"></script>
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                var id = 0;
+                $(document).on('click', '.btnEdit', function () {
+                    id = $(this).attr("data-value");
+                    $('#dialog').dialog('open');
+                });
+
+                $('#dialog').dialog({
+                    autoOpen: false,
+                    width: 400,
+                    resizable: false,
+                    title: 'Edit Product details',
+                    modal: true,
+                    open: function (event, ui) {
+                        // Load partial view _GridEditPartial
+                        $(this).load("@Url.Action("GetProductById")", { id: id });
+                    },
+                    buttons: {
+                        "Close": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+            });
+        </script>
+    }
+        -->
+</div>

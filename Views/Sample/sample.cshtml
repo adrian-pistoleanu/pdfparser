@@ -1,0 +1,59 @@
+﻿
+@model Dropdowns.Models.ModelLista
+@{ ViewBag.Title = "Alege pdf din lista"; Layout = null; }
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<div class="row">
+    <table style="margin:0 auto">
+        <tr>
+            <td style="padding:10px;border:double">
+                <embed src="/PDFs/tabel3.pdf" width="500" height="500" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+            </td>
+            <td style="padding:10px">
+                <embed src="/PDFs/tabel4.pdf" width="500" height="500" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+            </td>
+        </tr>
+    </table>
+    <br />
+
+
+    <div class="col-sm-4 col-sm-offset-4">
+        <h3>Choose from sample data or from loaded table</h3>
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+    @using (Ajax.BeginForm("sample", "Sample", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "land1", LoadingElementId = "loading" }))
+    {
+                              @* State selection dropdown *@
+ <div class="form-group">
+         @Html.LabelFor(m => m.State)
+@Html.DropDownListFor(m => m.State, // 1. Store selected value in Model.State;
+                                         // when page is rendered after postback,
+                                         // take selected value from Model.State.
+
+                                              // 2. Take list of values from Model.States
+                                              Model.optiuni,
+
+                                              // 3. Text for the first 'default' option
+                                              "- Please choose a table-",
+
+                                              //4. A class name to assign to <select> tag
+                                              new { @class = "form-control" })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="button5">Extract tables</button>
+ }
+
+              
+
+            </div>
+        </div>
+    </div>
+
+ 
+</div>
+<script>
+
+</script>

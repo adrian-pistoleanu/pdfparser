@@ -1,0 +1,222 @@
+﻿@{
+    ViewBag.Title = "Extract structured data from PDFs";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<div class="jumbotron">
+    <h2>Extract structured data from PDF files</h2>
+    <p class="lead">To use these tools, first upload a pdf file(only .pdf accepted and under 50mb) then choose your appropiate tool like extracting text(to MS Office Word document), extracting forms(to word), tables(delimites by lines or not - there is a greater accuracy if the table is surrounded by lines - each table is saved in a separate MS Office Excel file ). You can also choose from samples pdf(which contains dummy data just to check these tools).</p>
+    <p>Still under development - many more cool feature to be added.</p>
+    
+</div>
+
+
+
+    
+     
+  <div class="container" id="div1">
+    <span>Please choose an option from this tabs:</span>
+                <ul class="nav nav-tabs" >
+<li class="active"><a href="#a" data-toggle="tab"><span>Load file for processing</span></a></li>
+<li><a href="#b" data-toggle="tab"><span>Extract text to Word</span></a></li>
+<li><a href="#c" data-toggle="tab"><span>Extract tables with no lines</span></a></li>
+<li><a href="#d" data-toggle="tab"><span>Extract tables with lines</span></a></li>
+<li><a href="#e" data-toggle="tab"><span>Extract forms</span></a></li>
+<li><a href="#f" data-toggle="tab"><span>Extract tables to Database</span></a></li>
+<li><a href="#g" data-toggle="tab"><span>NLP</span></a></li>
+<li><a href="#h" data-toggle="tab"><span>Comparison with other products</span></a></li>
+       </ul>
+                <div class="tab-content">
+                   
+       <div class="tab-pane active" id="a">
+           <div class="container-fluid">
+               <h3 style="margin:0 auto;text-align:center;margin-top:20px">Extracting text from PDFs to word document </h3>
+              
+               <div class="row">
+                   <div class="col-sm-4" >
+                       <h2>Upload File</h2>
+                       @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data", Action = HttpContext.Current.Request.Url.AbsoluteUri + "#div1" }))
+                       {
+                           <label for="file">Upload File:</label>
+                           <input type="file" name="file" id="file" /><br><br>
+                           <input type="submit" value="Upload File" />
+                           <br><br>                      
+                               string s = ViewBag.Message + " file: " + @Session["fisier"];
+                           <p>@s</p>                       
+                       }
+                   </div>
+                   <div class="col-sm-8">
+                       <h3>Preview of a sample file</h3>
+                       @if (Session["fisier"] != null && Session["fisier"].ToString().Length > 0)
+                       {
+                           string sursa = "/PDFs/" + Session["fisier"];
+                           <embed src=@sursa width="800" height="600" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                       }
+                       <div id="parser1"></div>
+                   </div>
+               </div>
+           </div>
+
+                    </div> <!-- sfarsit tab a-->
+
+                    <div class="tab-pane" id="b">
+                        <h3>Extract text from pdf to document Office Word</h3>
+                    @if (Session["fisier"] != null)
+                    {
+                        <p>The current loaded file is @Session["fisier"]</p>
+                    }
+               @using (Ajax.BeginForm("procesare", "Text", new { numefisier = @Session["fisier"] }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "rezultatb", LoadingElementId = "loading2" }))
+               {
+                       <span>Click the button to generate the word document with data from pdf</span>
+                            <input type="submit" id="button1" value="Process pdf" class="btn btn-primary" /><br />
+                        }
+                    <div id="rezultatb"></div>
+                        <div id="loading2" class="modal"><p>Extracting table data from the pdf... Please wait</p> </div>
+                    </div>  <!-- sfarsit tab b-->
+
+          <div class="tab-pane" id="c">
+              <h3>Extract tables with no lines</h3>
+          
+
+              <div class="container-fluid">
+
+                  <div class="row">
+                      <div class="col-sm-5">
+                          @if (Session["fisier"] != null)
+                          {
+                              <p>The current loaded file is @Session["fisier"]</p>
+                          }
+
+                          @using (Ajax.BeginForm("sample", "Nolines", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "samplemodified3" }))
+                          {
+                              <span>Click this button to load the sample file from the right</span>
+                              <input type="submit" id="button1" value="Use sample data instead" class="btn btn-primary" />
+                          }
+                          <div id="samplemodified3"></div>
+                          <br />
+                          @using (Ajax.BeginForm("procesare", "Nolines", new { numefisier = @Session["fisier"] }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "rezultate3", LoadingElementId = "loading5" }))
+                          {
+                              <input type="submit" id="button1" value="Extract table" class="btn btn-primary" />
+                          }
+                          <div id="rezultate3"></div>
+                          <div id="loading5" class="modal"><p>Extracting  data from the pdf... Please wait</p> </div>
+
+                      </div>
+                      <div class="col-sm-7">
+                          <!--dummy data-->
+                          <embed src="/PDFs/tbfaralinii.pdf" width="700" height="600" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                      </div>
+                  </div>
+              </div>
+
+                    </div> 
+       <!-- sfarsit tab c-->
+
+                    <div class="tab-pane" id="d">
+                        <h2>Extract tables from pdf</h2>
+                        @Html.Action("sample", "Sample")
+                        <div id="loading" class="modal"><p>Extracting table data from the pdf... Please wait</p> </div>
+                        <div id="land1" class="col-lg-12"></div>
+                    </div>  <!-- sfarsit tab d-->
+
+                    <div class="tab-pane" id="e">
+                        <h3>Extract forms from pdf with AcroForms</h3>              
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    @if (Session["fisier"] != null)
+                                    {
+                                        <p>The current loaded file is @Session["fisier"]</p>
+                                    }
+
+                                    @using (Ajax.BeginForm("sample", "Form", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "samplemodified6" }))
+                                    {
+                                        <span>Press this button to use the pdf from the right</span>
+                                        <input type="submit" id="button1" value="Use sample data instead" class="btn btn-primary" />
+                                    }<br>
+                                    <div id="samplemodified6"></div>
+                                    <br />
+                                    @using (Ajax.BeginForm("procesare", "Form", new { numefisier = @Session["fisier"] }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "rezultate6", LoadingElementId = "loading6" }))
+                                    {
+
+                                        <input type="submit" id="button1" value="Extract form" class="btn btn-primary" />
+                                    }
+                                    <div id="rezultate6"></div>
+                                    <div id="loading6" class="modal"><p>Extracting  data from the pdf... Please wait</p> </div>
+                                </div>
+                                <div class="col-sm-7">
+                                    <!--dummy data-->
+                                    <embed src="/PDFs/form111fill.pdf" width="700" height="600" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                    <!-- sfarsit tab e-->
+
+                    <div class="tab-pane" id="f">Sent table to database with Entity Framework</div>  <!-- sfarsit tab f-->
+
+                    <div class="tab-pane" id="g">Extract meaningful data from text - This is a feature that will use Natural Language Processing to answer questions about persons and concepts from text and tables. E.g. What is the most expensive table ? </div>  <!-- sfarsit tab g-->
+
+                        <div class="tab-pane" id="h">Comparison with Acrobat professional and Abby PDF Transformer</div>  <!-- sfarsit tab g-->
+                  
+
+                </div><!-- /tab-content -->      
+  
+</div> <!-- containter -->
+
+<!-- apelam partial view cu select list care afiseaza date in divul de mai jos, land1 -->
+
+<style>
+    .modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.stack.imgur.com/FhHRx.gif') 
+                50% 50% 
+                no-repeat;
+}
+</style>
+
+
+
+<!-- la selectare optiune prin jquery sa se incadreze/evidentieze tabelul,  apoi apare extragerea datelor dedesupt + scroll automat cu jquery -->
+
+@section Scripts
+{
+  
+    <script>
+        $( document ).ready(function() {
+    
+
+            $('#parsing').submit(function (event) {
+
+                event.preventDefault();
+
+                $.ajax({
+                    url: "@(Url.Action("ButtonClick","Home"))",
+                    type: "POST",
+                    data: { button1:"button1" },
+                    success: function (data) {
+                        //Fill div with results
+                        $("#label1").html(data);
+                        Console.Log("succes");
+                    },
+                    error:failedSearch
+                });
+            });
+
+            function failedSearch() {
+                $("#label1").html = "There was a problem in the search. Please, try later on";
+            }
+        });
+</script>
+    }
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

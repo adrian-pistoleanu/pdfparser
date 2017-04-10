@@ -1,0 +1,15 @@
+﻿@using MVCParser.Models;
+@model  textprocesare
+@{
+    ViewBag.Title = "Extract text from pdf";
+    //  Layout = "~/Views/Shared/_LayoutGrid.cshtml";
+    Layout = null;
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<link href="https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+
+<p>The file that was generated is @Model.s</p>
+
+<p>Download the file by clicking this button @Html.ActionLink("Download file", "download_word", "Text", new { numefisier = @Model.s }, null)</p>

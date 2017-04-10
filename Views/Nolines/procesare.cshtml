@@ -1,0 +1,41 @@
+﻿@using iTextSharp.tutorial.Chapter1;
+@using iTextSharp.tutorial.detectie_tabel;
+@using System.Text;
+@model  objtbnolines
+
+@{
+    ViewBag.Title = "Detecting table";
+   // Layout = "~/Views/Shared/_LayoutGrid.cshtml";
+     Layout = null;
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<link href="https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+
+@{
+    var alltables = Model.matinit;
+    var words = Model.cuvinte;
+    int poz = 0;
+}
+<div>
+    @foreach (List<int>[] mat in alltables)
+    {
+
+        List<StringBuilder> cuv = new List<StringBuilder>(Model.cuvinte[poz]);
+
+        <table class="table table-bordered">
+            @foreach (List<int> q in mat)
+            {
+                <tr>
+                    @foreach (int n in q)
+                    {
+                        <td>@cuv[n]</td>
+                    }
+                </tr>
+            }
+
+        </table>
+        poz = poz + 1;
+    }
+</div>
